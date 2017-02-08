@@ -7,7 +7,7 @@ extern uint8_t SevenSegNumFont[];
 extern uint8_t BigFont[];
 extern uint8_t SevenSegNumFont[];
 const double pi=3.1415;
-UTFT myGLCD(CTE50,38,39,40,41);
+UTFT myGLCD(CTE70,38,39,40,41);//model no of lcd
 UTFT_Geometry geo(&myGLCD);
 void fillarc(int cirnum,int value){
   int c=180+cirnum*440;
