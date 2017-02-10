@@ -32,6 +32,7 @@ while (Serial1.available() <= 0) {
   Serial1.write('a');
     delay(300);
 }
+myGLCD.print("Outaa Loop,biyatch!",100,10);
 }
 
 void dashsetup()
@@ -91,7 +92,7 @@ res1=myFiles.loadBitmap(156, 0, 488, 480,"IITR.RAW");
 }
 void setup() {
   // put your setup code here, to run once:
-//Serial1.begin(9600);
+//Serial.begin(9600);
 Serial1.begin(9600);
 int picsize_x, picsize_y;
 myGLCD.InitLCD(); 
@@ -100,7 +101,7 @@ myGLCD.setFont(BigFont);
 myGLCD.fillScr(VGA_WHITE);
 file.initFAT();
 //dashsetup();
-
+myGLCD.print("Setting up",10,10);
 communicate();
    
    }
@@ -199,7 +200,7 @@ void sercomm(){
 while (true)
  {
     
-     long long localTime_elapsed=millis();
+   long long localTime_elapsed=millis();
   while (!Serial1.available())
   {
    if((localTime_elapsed+500)<millis()) communicate();
@@ -209,8 +210,9 @@ while (true)
   str+=c;
   }
        Serial1.write('a');
-  checkch();
- 
+       
+ // checkch();
+ myGLCD.print("Outaa sercomm,biyatch!",100,50);
 
   }
 
@@ -218,7 +220,7 @@ while (true)
 
 void update()
 {
-/*  s=spe.toFloat();
+  s=spe.toFloat();
 if(b!=s)
 {
   myGLCD.setColor(200,200,200);
@@ -235,7 +237,7 @@ if(b!=s)
   b=s;
 
 }
- */ 
+ 
 
     
 }
@@ -243,14 +245,11 @@ if(b!=s)
 
 void loop() {
   // put your main code here, to run repeatedly:
- // sercomm();
-  //sercomm();
-//  str="A2.8B7.5C5.7D2.5E4F3G2H1J0K8L3M4";
-  sercomm();
-//Serial.print(str);
-printcheck();
+// str="A2.8B7.5C5.7D2.5E4F3G2H1I9.0J54K8L3M4A";
+sercomm();
+myGLCD.print("sdjcs "+str,90,90);
 //update();
 
- //printcheck();
+//printcheck();
   
 }
