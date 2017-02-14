@@ -23,22 +23,20 @@ String spe="";
 String rpm="";
 String curLV="";
 String ambtemp="";
+String powerHV="";
+String powerLV="";
+String energyLV="";
+String energyHV="";
+String SOCHV="";
+String SOCLV="";
 String str="";
 String scrape="";
 
-void communicate()
-{
-while (Serial1.available() <= 0) {
-  Serial1.write('a');
-    delay(300);
-}
-myGLCD.print("Outaa Loop,biyatch!",100,10);
-}
 
 void dashsetup()
 {
 word res1,res2,res3;
-res1=myFiles.loadBitmap(156, 0, 488, 480,"IITR.RAW");
+/*res1=myFiles.loadBitmap(156, 0, 488, 480,"IITR.RAW");
    if (res1!=0)
       {
         if (res1==0x10)
@@ -71,8 +69,9 @@ res1=myFiles.loadBitmap(156, 0, 488, 480,"IITR.RAW");
         delay(3000);
         myGLCD.clrScr();
       }
-      myGLCD.fillScr(VGA_WHITE);
+      myGLCD.fillScr(VGA_WHITE);  */
    res3=myFiles.loadBitmap(0, 0, 800,480 ,"spee800.RAW");
+ 
    if (res3!=0)
       {
         if (res3==0x10)
@@ -101,8 +100,6 @@ myGLCD.setFont(BigFont);
 myGLCD.fillScr(VGA_WHITE);
 file.initFAT();
 //dashsetup();
-myGLCD.print("Setting up",10,10);
-communicate();
    
    }
 
@@ -110,18 +107,24 @@ communicate();
 
 void printcheck(){
   myGLCD.print(" volLV= "+volLV,CENTER,0);
-  myGLCD.print(" temp= "+temp,CENTER,30);
-  myGLCD.print(" acc1= "+acc1,CENTER,60);
-  myGLCD.print(" acc2= "+acc2,CENTER,90);
-  myGLCD.print(" bra= "+bra,CENTER,120);
-  myGLCD.print(" cur1= "+cur1,CENTER,150);
-  myGLCD.print(" cur2= "+cur2,CENTER,180);
-  myGLCD.print(" cur= "+cur,CENTER,210);
-  myGLCD.print(" vol= "+vol,CENTER,240);
-  myGLCD.print("spe= "+spe,CENTER,270);
-  myGLCD.print(" rpm= "+rpm,CENTER,300);
-  myGLCD.print(" curLV= "+curLV,CENTER,330);
-  myGLCD.print(" ambtemp= "+ambtemp,CENTER,360);
+  myGLCD.print(" temp= "+temp,CENTER,20);
+  myGLCD.print(" acc1= "+acc1,CENTER,40);
+  myGLCD.print(" acc2= "+acc2,CENTER,60);
+  myGLCD.print(" bra= "+bra,CENTER,80);
+  myGLCD.print(" cur1= "+cur1,CENTER,100);
+  myGLCD.print(" cur2= "+cur2,CENTER,120);
+  myGLCD.print(" cur= "+cur,CENTER,140);
+  myGLCD.print(" vol= "+vol,CENTER,160);
+  myGLCD.print("spe= "+spe,CENTER,180);
+  myGLCD.print(" rpm= "+rpm,CENTER,200);
+  myGLCD.print(" curLV= "+curLV,CENTER,220);
+  myGLCD.print(" ambtemp= "+ambtemp,CENTER,240);
+  myGLCD.print(" powerLV= "+powerLV,CENTER,260); 
+  myGLCD.print(" energyLV= "+energyLV,CENTER,280);
+  myGLCD.print(" SOCLV= "+SOCLV,CENTER,300);
+  myGLCD.print(" powerHV= "+powerHV,CENTER,320);
+  myGLCD.print(" energyHV= "+energyHV,CENTER,340);
+  myGLCD.print(" SOCHV= "+SOCHV,CENTER,360);
   
   }
 
@@ -167,23 +170,42 @@ void decide(int ascii){
     case 77:
     ambtemp=scrape;  
     break;
+        case 78:
+    powerLV=scrape;
+    break;
+    case 79:
+    energyLV=scrape;
+    break;
+    case 80:
+    SOCLV=scrape;
+    break;
+    case 81:
+    powerHV=scrape;
+    break;
+    case 82:
+    energyHV=scrape;
+    break;
+    case 83:
+    SOCHV=scrape;
+    break;
     }
   }
 
 void getval(int i,int ascii){
-  char chk=(ascii<77)?ascii+1:65;
+  char chk=(ascii<83)?ascii+1:65;
   for(int k=i+1;k<str.length();k++){
     
     if(str.charAt(k)==chk){
+      if(k-i<9){
       scrape=str.substring(i+1,k);
-      decide(ascii);
+      decide(ascii);}
       }
     }
   }
 
 void checkch(){
   for(int i=0;i<str.length();i++){
-  for(int ascii=65;ascii<=77;ascii++){
+  for(int ascii=65;ascii<=83;ascii++){
     char ch=ascii;
     if(str.charAt(i)==ch){
       getval(i,ascii);
@@ -195,30 +217,36 @@ void checkch(){
 
 void sercomm(){
    str="";
+//Serial1.flush();
+   while (true)
+ {
+    
+   while (!Serial1.available())
+  {
+       }
+      
+  char c=Serial1.read();
+  if(c=='a') {break;}
+  }
 
 
 while (true)
  {
     
-   long long localTime_elapsed=millis();
-  while (!Serial1.available())
+   while (!Serial1.available())
   {
-   if((localTime_elapsed+500)<millis()) communicate();
-    }
+       }
   char c=Serial1.read();
   if(c=='b') {break;}
   str+=c;
   }
-       Serial1.write('a');
-       
- // checkch();
- myGLCD.print("Outaa sercomm,biyatch!",100,50);
-
+// myGLCD.print(str,10,10);  
+  checkch();
   }
 
   
 
-void update()
+void update1()
 {
   s=spe.toFloat();
 if(b!=s)
@@ -235,8 +263,9 @@ if(b!=s)
   myGLCD.setFont(BigFont);
   myGLCD.print("Km/hr",420,350);
   b=s;
-
 }
+
+
  
 
     
@@ -245,11 +274,12 @@ if(b!=s)
 
 void loop() {
   // put your main code here, to run repeatedly:
-// str="A2.8B7.5C5.7D2.5E4F3G2H1I9.0J54K8L3M4A";
+//str="A2.8B7.5C5.7D2.5E4F3G2H1I9.0J54K8L3M4A";
+//checkch();
 sercomm();
-myGLCD.print("sdjcs "+str,90,90);
-//update();
+//myGLCD.print(str,CENTER,40);
+//update1();
 
-//printcheck();
+printcheck();
   
 }
