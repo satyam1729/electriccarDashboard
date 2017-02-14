@@ -1,4 +1,4 @@
-fffffffff  //A0 CurrentLV
+//A0 CurrentLV
 
 //global variables
  double value;

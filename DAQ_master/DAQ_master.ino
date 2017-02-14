@@ -47,6 +47,7 @@ File myFile;
 Sd2Card card;
 
 //global variables
+String scr="";
 float currentValue=8.0;
 String motorRPM="-1.0";
 String speedCar ="54.0";
@@ -355,47 +356,45 @@ void Update(){
   if(ch==':') {
    
   flg=1;
-  motorRPM="";
+  scr="";
   continue;
   }
 
   else{
   //delay(100);
   if(flg==1){
-  
         if(ch=='/'){
       flg++;
-      speedCar="";
+      motorRPM=scr;
+      scr="";
       continue; 
      }
-     motorRPM+=ch;
-
+     scr+=ch;
      }
     else if(flg==2){
- 
    if(ch=='/'){
       flg++;
-      currentLV="";
+      currentLV=scr;
+      scr="";
       continue; 
      }
-       speedCar+=ch;
-     
-     
+     scr+=ch;
      }
    else if(flg==3){
-   
    if(ch=='/'){
       flg++;
+      currentLV=scr;
       continue; 
      }
-      currentLV+=ch;
+      scr+=ch;
      }
      else if(flg==4){
    if(ch==';'){
       flg=0;
+      ambTemp=scr;
       break; 
      }
-      ambTemp+=ch;
+      scr+=ch;
      }
   }  
      }//charchk
