@@ -52,16 +52,16 @@ float currentValue=8.0;
 String motorRPM="-1.0";
 String speedCar ="54.0";
 String currentLV="-4.0";
-String ambTemp="-1.0";
-float powerLV=0; 
-float voltageLV=0;                        
-float energyLV=0;                       
-float SOCLV=0;                           
-float powerHV=0;
-float voltageHV=0;                                      
-float energyHV=0;                                     
-float SOCHV=0;                            
- String dashboard;
+//String ambTemp="-1.0";
+//float powerLV=0; 
+//float voltageLV=0;                        
+//float energyLV=0;                       
+//float SOCLV=0;                           
+//float powerHV=0;
+//float voltageHV=0;                                      
+//float energyHV=0;                                     
+//float SOCHV=0;                            
+//String dashboard;
 bool flag_update=0;
 int flg=0;
 bool curflag=0;
@@ -72,8 +72,8 @@ long long timer=0;
 String T_ms="";
 uint8_t flag; //
  double value=0.0;
- unsigned long long pasttime=0;
- unsigned long long t1=0;
+ //unsigned long long pasttime=0;
+// unsigned long long t1=0;
 String convert(double value1)
 { String s="";
   long value;
@@ -156,16 +156,16 @@ void setup() {
 void loop() {
   
 
- pasttime=millis();
+ unsigned long long pasttime=millis();
  Update();
   String sd_string="";
-  dashboard=""; 
+  String dashboard=""; 
   
   //a0 LV Voltage
   dashboard+='A';
   average(0);
   value=value*26.7/4.7;
-  voltageLV=value;
+  //voltageLV=value;
   sd_string+=convert(value);
   dashboard+=convert(value);
   sd_string+=",";
@@ -197,7 +197,7 @@ void loop() {
   sd_string+=convert(value);
   dashboard+=convert(value);
   sd_string+=",";
-  
+  /*
   //a5 Current sensor1 500A Channel B
   dashboard+='F';
   average(5);
@@ -218,9 +218,9 @@ void loop() {
   dashboard+=convert(value);
   if(curflag==1) currentValue=value;
   sd_string+=","; 
-  
+  */
   //current value
-  dashboard+='H';
+  dashboard+="FGH";
   sd_string+=convert(currentValue);
   dashboard+=convert(currentValue);
   sd_string+=",";
@@ -230,7 +230,7 @@ void loop() {
   dashboard+='I';
   average(7);
   value=200/11*value;
-  voltageHV=value;
+  //voltageHV=value;
   sd_string+=convert(value);
   dashboard+=convert(value);
   sd_string+=",";
@@ -252,7 +252,7 @@ void loop() {
   sd_string+=currentLV;
   dashboard+=currentLV;
   sd_string+=",";
-  
+/*  
   //amb. temperature
   dashboard+='M';
   sd_string+=ambTemp;
@@ -298,59 +298,38 @@ void loop() {
   SOCHV=(voltageHV-68)*100/14;
   sd_string+=convert(SOCHV);
   dashboard+=convert(SOCHV);
-  sd_string+=",";  
-  dashboard+='A';
-
-
-  
+  sd_string+=",";
+  */  
+  dashboard+='A';  
   float time1 = millis()/1000.0;
   sd_string+=convert(time1);
-
-
   myFile = SD.open(Name, FILE_WRITE);
   myFile.println(sd_string);
   myFile.close();
-
-
 //delay(300);
- 
-
-dashcomm();
-//Serial.println(sd_string);  
-
-}
-
-
-
-void dashcomm()
-{ 
-  
-  
+//dashcomm();
   Serial.write('a');
   Serial.print(dashboard);
   Serial.write('b');
-  
-
+//Serial.println(sd_string);  
+}
+/*
+void dashcomm()
+{ 
   //write charwise
-  /*
+  
  Serial.write('a');
 for(int i=0;i<dashboard.length();i++){
   Serial.write(dashboard.charAt(i));
   }
  Serial.write('b');
- */
+ 
   //delay(300);
-  
   }
-
-  
+  */
 void Update(){
-   
-  
   //long long localTime_elapsed=millis();
     while(Serial.available()){
-  
-
   char ch=Serial.read();
   if(ch<60&&ch>45){
   if(ch==':') {
@@ -374,7 +353,7 @@ void Update(){
     else if(flg==2){
    if(ch=='/'){
       flg++;
-      currentLV=scr;
+      speedCar=scr;
       scr="";
       continue; 
      }
@@ -384,6 +363,7 @@ void Update(){
    if(ch=='/'){
       flg++;
       currentLV=scr;
+      scr="";
       continue; 
      }
       scr+=ch;
@@ -391,7 +371,8 @@ void Update(){
      else if(flg==4){
    if(ch==';'){
       flg=0;
-      ambTemp=scr;
+      //ambTemp=scr;
+      scr="";
       break; 
      }
       scr+=ch;
@@ -407,8 +388,9 @@ void average(int pin)
   for(int i=1;i<=5;i++)
   value+=5*analogRead(pin)/1024;
   value=value/5;
-
+ // value=2.05;
 }
+/*
 float conv2float(String s1)
 {
   if (s1.charAt(0)=='-') 
@@ -419,4 +401,4 @@ float conv2float(String s1)
   else
   { return s1.toFloat();}
 }
-
+*/
